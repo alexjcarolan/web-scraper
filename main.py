@@ -14,13 +14,19 @@ MAX_TASKS = 200
 MAX_PROCESSES = 8
 START_URL = "https://www.wikipedia.org/"
 
+
 # CPU-bound tasks should be run in a process pool
 def scrape_links(page: str, link: str) -> Optional[List[str]]:
     try:
         soup = BeautifulSoup(page, "html.parser")
-        return [urljoin(link, str(href)) for a in soup.find_all("a", href=True) if isinstance(a, Tag) and (href := a.get("href")) is not None]
+        return [
+            urljoin(link, str(href))
+            for a in soup.find_all("a", href=True)
+            if isinstance(a, Tag) and (href := a.get("href")) is not None
+        ]
     except:
         return None
+
 
 # I/O-bound tasks should be run in an event loop
 async def scrape_page(session: ClientSession, link: str) -> Optional[str]:
@@ -36,7 +42,13 @@ async def scrape_page(session: ClientSession, link: str) -> Optional[str]:
         return None
 
 
-async def task(start_time: float, links: Set[str], queue: Queue[str], session: ClientSession, executor: ProcessPoolExecutor) -> None:
+async def task(
+    start_time: float,
+    links: Set[str],
+    queue: Queue[str],
+    session: ClientSession,
+    executor: ProcessPoolExecutor,
+) -> None:
     while (time.time() - start_time) < MAX_TIME:
         try:
             link = await asyncio.wait_for(queue.get(), timeout=1)
