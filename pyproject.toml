@@ -1,0 +1,11 @@
+[project]
+name = "h-company-tech-test"
+version = "0.1.0"
+description = "Web scraping links using concurrency & parallelism"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "aiohttp>=3.11.16",
+ "bs4>=0.0.2",
+ "ruff>=0.11.5",
+]
